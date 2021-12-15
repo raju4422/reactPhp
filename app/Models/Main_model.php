@@ -13,6 +13,24 @@ class Main_model extends Model {
         'name', 'email','password'
     ];
 
+
+     public function __construct()
+    {
+        parent::__construct();
+        $this->db = \Config\Database::connect();
+        // OR $this->db = db_connect();
+    }
+
+
+
+    public function get($id=null){
+
+
+       return $this->db->table($this->table)->get()->getResultArray();
+
+
+    }
+
    
 }
 
