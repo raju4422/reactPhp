@@ -10,7 +10,7 @@ class Main_model extends Model {
     protected $table      = 'users';
     protected $primaryKey = 'id';
     protected $allowedFields = [
-        'name', 'email','password'
+        'name', 'email','password','api_access_code'
     ];
 
 
@@ -28,6 +28,14 @@ class Main_model extends Model {
 
        return $this->db->table($this->table)->get()->getResultArray();
 
+
+    }
+
+
+
+    public function getColumnDetail($table,$column,$id){
+
+        return $this->db->table($table)->where('id',$id)->get()->getRow()->$column;
 
     }
 

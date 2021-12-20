@@ -19,7 +19,7 @@
 <div class="container p-5">
 
 
-<form method="post" action="<?php echo site_url(); ?>/home/insert">
+<form method="post" action="<?php echo base_url(); ?>/home/insert">
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="inputEmail4">Email</label>

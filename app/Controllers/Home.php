@@ -14,6 +14,7 @@ class Home extends BaseController
 
 
     protected $db;
+     protected $session;
 
     public function __construct(){
     
@@ -25,6 +26,8 @@ class Home extends BaseController
             header("Access-Control-Allow-Methods: PUT, POST, GET, OPTIONS, DELETE");
 
             $this->db = \Config\Database::connect();
+
+            $this->session = \Config\Services::session();
 
     }
 
@@ -63,14 +66,15 @@ class Home extends BaseController
         $data=array(
 
             'email'=>$this->request->getVar('email'),
-            'password'=>$this->request->getVar('password'),
+            'password'=>password_hash($this->request->getVar('password'),PASSWORD_DEFAULT),
             'name'=>$this->request->getVar('name'),
+            'api_access_code' =>rand(100000,999999)
 
         );
 
         
         $main_model= new Main_model();
-        $res=$main_model->insert($data);
+        $res=$main_model->save($data);
         if($res){
             echo json_encode('success');
         }else{
@@ -124,16 +128,30 @@ class Home extends BaseController
 
            $email=$this->request->getVar('email');
            $password=$this->request->getVar('password');
+           // $email ="demo@gmail.com";
+           // $password = '123456';
+            $main_model= new Main_model();
 
-            $main_model = new Main_model();
-            $db   = \Config\Database::connect();
-            $count= $db->query('select * from users where email ="'.$email.'" and password="'.$password.'"')->getNumRows();
+            $builder= $this->db->table('users');
+            $count = $builder->where('email',$email)->get()->getNumRows();
             if($count==1){
-                $res=$db->query('select email,name,id,api_access_code from users where email ="'.$email.'"')->getRowArray();
-                $res['response']=true;
+                $user_data=$builder->where('email',$email)->get()->getRowArray();
+                if(password_verify($password, $user_data['password'])){
+
+                $set=$builder->where('id',$user_data['id'])->set('api_access_code',rand(100000,999999))->update();
+                if($set){
+                    $session_array=array('id'=>$user_data['id'],'api_access_code'=>$main_model->getColumnDetail('users','api_access_code',$user_data['id']),'user_email'=>$user_data['email']);
+                }
+
+                    $this->session->set($session_array);
+
+                    $res=array('response'=>true,'msg'=>'Your password is Correct','session_data'=>$this->session->get());
+                }else{
+                     $res=array('response'=>false,'msg'=>'Please Enter Correct Password');
+                }
 
             }else{
-               $res['response']=false;
+               $res=array('response'=>false,'msg'=>'Please Enter Correct Email');
             }
 
             echo json_encode($res);
