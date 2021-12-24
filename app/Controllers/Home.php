@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 use App\Models\Main_model;
-
-
 use CodeIgniter\HTTP\RequestInterface;
 
 
@@ -28,6 +26,7 @@ class Home extends BaseController
             $this->db = \Config\Database::connect();
 
             $this->session = \Config\Services::session();
+            helper('common');
 
     }
 
@@ -47,15 +46,16 @@ class Home extends BaseController
         var_dump($data);
     }
 
-    public function get_data(){
-       
-
+    public function get_data($api=null){
+       // if(apiAuth('260566')){
         // $builder= $this->db->table('users');
         // $res = $builder->get()->getResultArray();
         $main_model= new Main_model();
         $res=$main_model->get();
 
         echo json_encode($res);
+    // }
+    
          
     }
 
@@ -128,8 +128,8 @@ class Home extends BaseController
 
            $email=$this->request->getVar('email');
            $password=$this->request->getVar('password');
-           // $email ="demo@gmail.com";
-           // $password = '123456';
+           $email ="demoraju@gmail.com";
+           $password = '123456';
             $main_model= new Main_model();
 
             $builder= $this->db->table('users');

@@ -33,6 +33,12 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 
+$routes->get('/index', 'ThemeController::index');
+$routes->get('/about', 'ThemeController::about');
+$routes->get('/services', 'ThemeController::services');
+$routes->get('/portfolio', 'ThemeController::portfolio');
+$routes->get('/pricing', 'ThemeController::pricing');
+$routes->get('/contact', 'ThemeController::contact');
 /*
  * --------------------------------------------------------------------
  * Additional Routing
